@@ -5,6 +5,11 @@
     {{$page->page_title_ar}}  -  {{$page->page_title_en}}  @endsection
 
 
+@section('style')
+                <script src="//cdn.ckeditor.com/4.16.0/full/ckeditor.js"></script>
+
+@endsection
+
 @section('content')
     <form class="card col-md-6 col-12" style="margin: auto" action="{{route('pages.update.page' , $page->id)}}" method="post" enctype="multipart/form-data">
         @csrf
@@ -41,6 +46,9 @@
                           class="form-control @error('page_details_ar') is-invalid @enderror" id="page_details_ar">
                     {{ $page->page_details_ar}}
                 </textarea>
+                <script>
+                        CKEDITOR.replace( 'page_details_ar' );
+                </script>
             </div>
 
 
@@ -51,8 +59,11 @@
                 </label>
                 <textarea rows="5" name="page_details_en"
                        class="form-control @error('page_details_en') is-invalid @enderror" id="page_details_en">
-                    {{ $page->page_details_en}}
+                    {!! $page->page_details_en !!}
                 </textarea>
+                <script>
+                        CKEDITOR.replace( 'page_details_en' );
+                </script>
             </div>
 
 

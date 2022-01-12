@@ -211,8 +211,7 @@
                         <th width="5%">Id</th>
                         <th width="10%">@lang('site.product_name')</th>
                         <th width="10%">@lang('site.cat_name')</th>
-                        <th width="10%">@lang('site.height')</th>
-                        <th width="10%">@lang('site.size')</th>
+
                         <th width="10%">@lang('site.quantity')</th>
                         <th width="10%">@lang('site.item_price')</th>
                         <th width="40%">@lang('site.img')</th>
@@ -253,14 +252,6 @@
                         data: 'category',
                         name: 'category'
                     },
-                    {
-                        data: 'height',
-                        name: 'height'
-                    },
-                    {
-                        data: 'size',
-                        name: 'size'
-                    },
 
                     {
                         data: 'quantity',
@@ -275,7 +266,7 @@
                         name: 'image',
                         render: function(data, type, full, meta) {
                             return "<img src=\"" + data +
-                                "\"   border=\"0\"  class=\"img-rounded\" align=\"center\"  height=\"50\"/>";
+                                "\"   border=\"0\"  class=\"img-rounded\" align=\"center\"  height=\"50\"/ width='80' >";
                         }
                     }, // {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]

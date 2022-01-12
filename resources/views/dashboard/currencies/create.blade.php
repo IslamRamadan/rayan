@@ -36,12 +36,19 @@
             <div class="form-group">
                 <label for="code">
 
-                    @lang('site.code')
+                    @lang('site.code_en')
                 </label>
-                <input value="{{ old('code') }}"  type="text" name="code"
-                       class="form-control @error('code') is-invalid @enderror" id="code">
+                <input value="{{ old('code_en') }}"  type="text" name="code_en"
+                       class="form-control @error('code_en') is-invalid @enderror" id="code_en">
             </div>
+            <div class="form-group">
+                <label for="code">
 
+                    @lang('site.code_ar')
+                </label>
+                <input value="{{ old('code_ar') }}"  type="text" name="code_ar"
+                       class="form-control @error('code_ar') is-invalid @enderror" id="code_ar">
+            </div>
 
 
 

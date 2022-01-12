@@ -25,7 +25,7 @@ class UserController extends Controller
             return Datatables::of($data)
                 ->addColumn('created_at', function ($artist) {
                     $date = date_create($artist->created_at);
-                    return date_format( $date,'l jS \of F Y h:i:s A');
+                    return date_format( $date,'d/m/Y H:i A');
                 })
                 ->addColumn('country', function ($artist) {
                     return $artist->country->name_ar  .'  -  '.$artist->country->name_en;
@@ -34,9 +34,9 @@ class UserController extends Controller
                 ->addColumn('action', function($row){
 
                     $action = '
-                        <a class="btn btn-success"  href="'.route('users.edit' , $row->id).'" id="edit-user" >Edit </a>
+                        <a class="btn btn-success"  href="'.route('users.edit' , $row->id).'" id="edit-user" >'.\Lang::get('site.edit').' </a>
                         <meta name="csrf-token" content="{{ csrf_token() }}">
-                        <a href="'.route('users.destroy' , $row->id).'" class="btn btn-danger">Delete</a>';
+                        <a href="'.route('users.destroy' , $row->id).'" class="btn btn-danger">'.\Lang::get('site.delete').'</a>';
                     return $action;
 
                 })

@@ -25,6 +25,7 @@ use Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Lang;
+use App\Settings;
 
 class CartController extends Controller
 {
@@ -94,6 +95,7 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
+        
 
         if (!is_array(Session::get('cart'))) {
             Session::forget('cart');
@@ -116,6 +118,7 @@ class CartController extends Controller
 
         //        Session::forget('cart');
         $product = $request->except('_token');
+        // dd($product);
 
         $cart = Session::get('cart');
 
@@ -123,14 +126,29 @@ class CartController extends Controller
 
         $current_product = Product::find($product['product_id']);
 
+        // dd($current_product->basic_category->type);
+        if($current_product->basic_category->type == 1){
+            $current_height = ProdHeight::where('product_id',$product['product_id'])->where('height_id',0)->where('size_id',0)->first();
+            // dd($current_height->quantity);
+        }else{
         $current_height = ProdHeight::find($product['product_height_id']);
+        }
+        // dd($product,$current_product,$current_height);
+        //  dd((int)$product['quantity'] > $current_height->quantity);
 
+        if ((int)$product['quantity'] > $current_height->quantity) {
+            // dd((int)$product['quantity'] > $current_height->quantity);
+            // Alert::error('الكميه الموجوده حاليا لهذا المقاس اقل من الكميه المطلوبه !');
 
-        if ($product['quantity'] > $current_height->quantity) {
+            // return back();
+            
+             return response()->json(
+            [
+                'success' => false,
+                
 
-            Alert::error('الكميه الموجوده حاليا لهذا المقاس اقل من الكميه المطلوبه !');
-
-            return back();
+            ]
+        );
         }
 
         if (isset($cart[$product['product_id']][$product['product_height_id']])) :
@@ -141,7 +159,7 @@ class CartController extends Controller
         endif;
 
         Session::put('cart', $cart);
-
+       
         $total_price = 0;
         $total_qty = 0;
 
@@ -162,7 +180,7 @@ class CartController extends Controller
         $cart_details['totalQty'] = $total_qty;
 
         Session::put('cart_details', $cart_details);
-
+        
         return response()->json(
             [
                 'success' => true,
@@ -244,20 +262,20 @@ class CartController extends Controller
                                     . ' <div class="col-1 pad-0">'
                                     . '<a class="  circle " style="padding:5px 10px" id="delete-circle" href="'
                                     . route('remove.from.shopping.cart', [$product_details['product_id'], $product_details['product_height_id']]) . '">
-  <i class="fas fa-times ">
+          <i class="fas fa-times ">
 
-</i></a>'
-                                    . ' </div>'
-                                    . ' </div>'
-                                    . ' <hr>';
+        </i></a>'
+                                            . ' </div>'
+                                            . ' </div>'
+                                            . ' <hr>';
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
-        }
 
-        $cart_details = Session::get('cart_details');
+                $cart_details = Session::get('cart_details');
 
         $val .= ' <h5 class="text-center">' . \Lang::get('site.subtotal');
 
@@ -309,7 +327,7 @@ class CartController extends Controller
         //            'success' => false,
         //            'msg' => 'Quantity Requested not Available of this item !'
         //        ]);
-
+            // dd($request->all());
         $product_id = $request->product_id;
         $product_height_id = $request->product_height_id;
         $operation = $request->operation;
@@ -328,6 +346,7 @@ class CartController extends Controller
         $product = Product::find($product_id);
 
         $price = $product->price;
+        // dd($cart,$item,$product->basic_category->type);
         $cart_details = Session::get('cart_details');
 
         $cart_details_quantity = $cart_details['totalQty'];
@@ -338,7 +357,13 @@ class CartController extends Controller
 
         if ($operation > 0) {
             //IF QUANTITY >= CURRENT PLUS ONE
-            $prod_height = ProdHeight::find($product_height_id);
+            if($product->basic_category->type ==1 ){
+                $prod_height = ProdHeight::where('product_id',$product_id)->where('height_id',0)->first();
+            }
+            else{
+                $prod_height = ProdHeight::find($product_height_id);
+            }
+            // dd($prod_height->quantity);
             if ($prod_height->quantity < ($quantity + 1)) {
                 return  response()->json([
                     'success' => false,
@@ -533,7 +558,7 @@ class CartController extends Controller
     {
         //        dd($request->all());
         $city_id = $request->city;
-
+        $text_free=null;
         if (!$city_id) {
             return response()->json([
                 'success' => false,
@@ -664,6 +689,16 @@ class CartController extends Controller
         //        $delivery .= '<p> '.$city->delivery_period .'</p>';
 
         //        }
+      $is_free_shop=Settings::first()->is_free_shop;
+      if($is_free_shop==1){
+        $text_free=__('text_free_shopping');
+        return response()->json([
+            'success' => true,
+            'ship' => __('site.text_free_shopping'),
+            'total_value' => $request->total_value . " KWD ",
+            'delivery' => $delivery
+        ]);
+      }
         return response()->json([
             'success' => true,
             'ship' => $val,
@@ -687,7 +722,7 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-
+        
         //ORDER STORE
         $messeges = [
 
@@ -696,43 +731,55 @@ class CartController extends Controller
             'email.email' => "يرجي كتابة البريد الالكتروني بشكل صحيح",
             'country_id.required' => "يرجي إختيار الدوله",
             'city_id.required' => "يرجي إختيار المدينه",
+            'region.required' => "يرجي إختيار المنطقه",
             'phone.required' => "يرجي إدخال رقم الهاتف",
             'phone.max' => "رقم الهاتف يجب ألا يزيد عن 11 رقم",
             'phone.min' => "رقم الهاتف يجب ألا يقل عن 3 أرقام",
             'address1.required' => "يرجي إدخال العنوان الاول",
+            'accept.required'=>__('site.accept_required'),
             //            'postal_code.required' => "يرجي إدخال الرمز البريدي",
 
         ];
+        if($request->has('in-delivery')){
+          $v=['name' => ['required'],
 
-        $validator = Validator::make($request->all(), [
+          // 'email' => ['required', 'email'],
 
-            'name' => ['required'],
+          'country_id' => ['required'],
 
-            // 'email' => ['required', 'email'],
+          'city_id' => ['required'],
+          'region' => ['required'],
+          'accept' => ['required'],
 
-            'country_id' => ['required'],
+          'phone' => ['required', 'max:11', 'min:3'],
 
-            'city_id' => ['required'],
+          'address1' => ['required'],];
+        }else{
 
-            'phone' => ['required', 'max:11', 'min:3'],
+          $v=['name' => ['required'],
+          'accept' => ['required'],
 
-            'address1' => ['required'],
-
-            //            'postal_code' => ['required'],
-
-        ], $messeges);
+          'phone' => ['required', 'max:11', 'min:3'],
+        ];
+        }
+        $validator = Validator::make($request->all(), $v, $messeges);
 
 
         if ($validator->fails()) {
             Alert::error($validator->errors()->first(), '');
             return back();
         }
+        
+        if(Session::get('cart_details')['totalPrice'] < 10){
+            Alert::error(__('site.error_min_total_price', ['amount'=>Session::get('cart_details')['totalPrice']]), '');
+            return back();
+        }
+        // return $request->all();
         if ($request->email == null) {
             $request->merge(['email' => 'no@gmail.com']);
         }
 
 
-        //        dd($request);
 
         $cart_details = Session::get('cart_details');
 
@@ -742,17 +789,37 @@ class CartController extends Controller
 
         $variation = str_replace("+", "", $request['phone']);
         $variation2 = str_replace("-", "", $variation);
+        $is_free_shop=Settings::first()->is_free_shop;
+        if($is_free_shop!=1){
+          if($request->has('in-delivery')){
+            $total_pr_de=$cart_details['totalPrice'] + $city->delivery;
 
+          }else{
+            $total_pr_de=$cart_details['totalPrice'] ;
+            $request->merge([
+              'address1'=>' ',
+              'city_id'=>0,
+            ]);
+          }
         $request->merge([
-            'total_price' => $cart_details['totalPrice'] + $city->delivery - Session::get('coupon')['discount'],
+            'total_price' => $total_pr_de - Session::get('coupon')['discount'],
             'total_quantity' => $cart_details['totalQty'],
             'phone' => $variation2
         ]);
+
+      }else {
+        $request->merge([
+            'total_price' => $cart_details['totalPrice']  - Session::get('coupon')['discount'],
+            'total_quantity' => $cart_details['totalQty'],
+            'phone' => $variation2
+        ]);
+      }
         //MAKE ORDER TABLE
 
         //ADD TO TABLE
 
 
+        // dd($request->all());
 
 
         $order = Order::create($request->except('_token'));
@@ -774,7 +841,13 @@ class CartController extends Controller
 
         foreach ($cart as $cart_item) {
             foreach ($cart_item as $item) {
-                $height = ProdHeight::find($item['product_height_id']);
+                $cat_type=(Product::find($item['product_id']))->basic_category->type;
+                if($cat_type == 1){
+                    $height = ProdHeight::where("product_id",$item['product_id'])->where('height_id',0)->first();
+                }else{
+
+                    $height = ProdHeight::find($item['product_height_id']);
+                }
                 if ($height->quantity >= $item['quantity']) {
                     $height->quantity = $height->quantity - $item['quantity'];
                     $height->save();
@@ -963,9 +1036,9 @@ class CartController extends Controller
         // $apiKey = 'rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL';
         //Live
         $apiURL = 'https://api.myfatoorah.com';
-        $apiKey = 'bOP13e6rFDKxF8Q1GSGwrj327hMz4Pp7FEipItzvOVvmayOCblo1FDh2UV5uHGvgQatGWtPJGl68PQQJ4a3X3Xfp8VvSISvECda7uFZrJoo-JRBWbuGa4VLuKCTSaa1unjBoW8ywv1BL-dBPo3gMdjHovkbyDj8q2YRu_sH_IEMpKMeTUPkdeJI0l0DfDNTjqfj8iojDTZkfvOizJ4nGq2MOhBNHNsMdDcSX5yxfLv8ZJwqv_DVrZbfUxoVXX6kgHKMQcu7HBhqiO60K6Riujviasephrsa8k7qnylOZbLbEaSIXRuc7C_nRvvmUwqbw9HHG00gWAePF5KHsuuIquufKqfBZbIdbMWrM6bAzZkKSxCMIvM0adIJjzMWkI5SJc82ujVo76VRMpNvL-hx9cobZSN5AU1GklZXDCiTsITAo-AD60R3Q9M98YDYZVdihDc5lfGarVnEIMfqoz5qWI7m8te7Lj-V8oyFCpxZlTVa3SET7htHL9FvA_iQ1rivns7JnKwezb7l6jPi6uihYJmdQBbfqCJ27gkOanKQ7mBGPFscfyFX0e0dL5Cp7vhi3akde0GCtz9IBUkmXHU6bGVroP08agaxH92Y8Oxs_uTaAj87dNW4INKfwLur6Oepcy9egvLG0IYovcPhvXzw1fPEeXqDvL1vzmWNSycuMNdSyfBvz'; //Live token value to be placed here: https://myfatoorah.readme.io/docs/live-token
+        // $apiKey = 'bOP13e6rFDKxF8Q1GSGwrj327hMz4Pp7FEipItzvOVvmayOCblo1FDh2UV5uHGvgQatGWtPJGl68PQQJ4a3X3Xfp8VvSISvECda7uFZrJoo-JRBWbuGa4VLuKCTSaa1unjBoW8ywv1BL-dBPo3gMdjHovkbyDj8q2YRu_sH_IEMpKMeTUPkdeJI0l0DfDNTjqfj8iojDTZkfvOizJ4nGq2MOhBNHNsMdDcSX5yxfLv8ZJwqv_DVrZbfUxoVXX6kgHKMQcu7HBhqiO60K6Riujviasephrsa8k7qnylOZbLbEaSIXRuc7C_nRvvmUwqbw9HHG00gWAePF5KHsuuIquufKqfBZbIdbMWrM6bAzZkKSxCMIvM0adIJjzMWkI5SJc82ujVo76VRMpNvL-hx9cobZSN5AU1GklZXDCiTsITAo-AD60R3Q9M98YDYZVdihDc5lfGarVnEIMfqoz5qWI7m8te7Lj-V8oyFCpxZlTVa3SET7htHL9FvA_iQ1rivns7JnKwezb7l6jPi6uihYJmdQBbfqCJ27gkOanKQ7mBGPFscfyFX0e0dL5Cp7vhi3akde0GCtz9IBUkmXHU6bGVroP08agaxH92Y8Oxs_uTaAj87dNW4INKfwLur6Oepcy9egvLG0IYovcPhvXzw1fPEeXqDvL1vzmWNSycuMNdSyfBvz'; //Live token value to be placed here: https://myfatoorah.readme.io/docs/live-token
 
-
+         $apiKey ='MI8Kyj_3zfrXWEnszpDTIwCSmNlz8fyeTNLu3bhLQNCd3X7MDfaI2g6rjEPQo6prMrvy8oi351N_P5B_vqw6JxcCGaVWgOfy8Df4HQLjwKKrhvXBD35i-FOhsb4JmRK54RXWBdPpn_FbZZhaPsq4fhGNDEtGHvfLyzviLAN--DSMrsBIcEXuowr7-SwXlAWbpSzLeQNwzhrtVtZF9LXgmr16MFweC5OVjeW5mm26lfEpXLtFQyhS_4YJFcoypezYs8V5UGDAI_VHH0DPrJmSXwV6fRdesT0YqCzV1egrUKtl-79hYMj_Fif9Y2l4rTOkOiQpCey9t6nusS-uHYImVutAwnCI9TgYtUUnZtlRk4oA_9TgN7CBab11ziY2HlZrPMkrfnzBHQ3wVvezihiYGJ7TD-TGxL53FJdMIHuLIE_jtGUK_348N-ywsgG5m_EeCRdJ-639dfofpW42S_wdCh-OGh9Lq34QrLOol9zfdE-wlI3BJGVuKbyXqKWPghCGVTj27Yv70pxPCnetIV5ygrJEGW50h8EcvGTktS9jJfMOVIqJDhl_Hta18581RhSCbku1qK1ZdBCdwfrYBpov06lUFQbP7M5abkCnpqPmk4N85z8KpU6WB4yw-34B2567mI994ItrdVcsyPFYDgqxWEuQfC-XJWifDLGakAEeEyIrlzOQ';
         /* ------------------------ Call SendPayment Endpoint ----------------------- */
         //Fill customer address array
         /* $customerAddress = array(
@@ -985,7 +1058,7 @@ class CartController extends Controller
 
         $order_item = OrderItem::where('order_id', $request->order_id)->get();
         $delivery_cost = City::find($order->city_id);
-        // dd($delivery_cost);
+        // dd($order->city_id);
 
         $invoiceItems = array();
         if (Session::get('coupon')) {
@@ -1017,12 +1090,17 @@ class CartController extends Controller
                 ]);
             }
         }
-
-        array_push($invoiceItems, [
-            'ItemName'  => "Shippng cost", //ISBAN, or SKU
-            'Quantity'  => 1, //Item's quantity
-            'UnitPrice' => number_format($delivery_cost->delivery, 3, '.', ''), //Price per item
-        ]);
+        $is_free_shop=Settings::first()->is_free_shop;
+        if($is_free_shop!=1){
+          // dd($request->all());
+            if($request->has('in-delivery')){
+                array_push($invoiceItems, [
+                    'ItemName'  => "Shippng cost", //ISBAN, or SKU
+                    'Quantity'  => 1, //Item's quantity
+                    'UnitPrice' => number_format($delivery_cost->delivery, 3, '.', ''), //Price per item
+                ]);
+              }
+            }
         // dd(Session::get('coupon'));
 
         // dd(Session::get('cart_details'),$invoiceItems);

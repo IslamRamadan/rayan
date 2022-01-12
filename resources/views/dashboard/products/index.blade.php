@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-    @section('page_title')  Products  @endsection
+    @section('page_title')  @lang('site.products')  @endsection
 
     @section('style')
         <script src="https://code.jquery.com/jquery-3.6.0.js"
@@ -14,7 +14,11 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
-
+        <style>
+            img.img-rounded {
+                width: 100px;
+            }
+        </style>
         <script>
             error = false
 
@@ -34,9 +38,9 @@
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left" style="float: right">
                         {{--                <a class="btn btn-success mb-2" id="new-user" data-toggle="modal">New User</a>--}}
-                        <a class="btn btn-info mb-2" href="{{route('sizes.index')}}">@lang('site.sizes')</a>
+                        {{--  <a class="btn btn-info mb-2" href="{{route('sizes.index')}}">@lang('site.sizes')</a>
                         <a class="btn btn-outline-info mb-2" href="{{route('heights.index')}}">@lang('site.heights')</a>
-                        <a class="btn btn-primary mb-2" href="{{route('size_guides.index')}}">@lang('site.size_guid')</a>
+                        <a class="btn btn-primary mb-2" href="{{route('size_guides.index')}}">@lang('site.size_guid')</a>  --}}
                     </div>
                     <div class="pull-right">
                         {{--                <a class="btn btn-success mb-2" id="new-user" data-toggle="modal">New User</a>--}}
@@ -159,5 +163,3 @@
 
 </script>
 @endsection
-
-

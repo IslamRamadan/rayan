@@ -34,10 +34,11 @@ class CategoryController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $action = '
-                        <a class="btn btn-success"  href="'.route('categories.edit' , $row->id).'" >Edit </a>
+                        <a class="btn btn-success"  href="'.route('categories.edit' , $row->id).'" >'.\Lang::get('site.edit').' </a>
+<a class="btn btn-outline-dark"  href="' . route('category_galaries.index', $row->id) . '" >'.\Lang::get('site.images').' </a>
                         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                       <a  href="'.route('categories.destroy' , $row->id).'" class="btn btn-danger">Delete</a>';
+                       <a  href="'.route('categories.destroy' , $row->id).'" class="btn btn-danger">'.\Lang::get('site.delete').'</a>';
                     return $action;
                 })
                 ->rawColumns(['action'])
@@ -73,7 +74,10 @@ class CategoryController extends Controller
             'name_ar.required'=>"اسم القسم باللغه العربيه مطلوب",
             'name_en.required'=>"اسم القسم باللغه الانجليزيه مطلوب",
             'basic_category_id.required'=>"يرجي اختيار القسم الرئيسي",
+ 'image_url.required' => "صورة القسم مطلوب",
 
+            'image_url.mimes'=>" يجب ان تكون الصورة jpg او jpeg او png  ",
+            'image_url.max'=>" الحد الاقصي للصورة 4 ميجا "
         ];
 
         $validator =  Validator::make($request->all(), [
@@ -83,6 +87,8 @@ class CategoryController extends Controller
             'name_en' => ['required'],
 
             'basic_category_id' => ['required'],
+                        // 'image_url' =>  'required|mimes:jpg,jpeg,png|max:4100',
+
         ], $messeges);
 
 

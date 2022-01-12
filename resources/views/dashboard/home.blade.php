@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('page_title')  Home  @endsection
+@section('page_title')  @lang('site.home')  @endsection
 
 @section('style')
 
@@ -184,7 +184,7 @@
                     {{--</div>--}}
                 {{--</div>--}}
                 {{--</a>--}}
-            {{--</div>--}}
+            {{--</div>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                 <a href="{{route('sizes.index')}}">
 
@@ -235,7 +235,7 @@
             </div>
         </div>
 
-        {{--<div class="row mt-2">--}}
+        <div class="row mt-2">--}}
 
         {{--</div>--}}
     </div>

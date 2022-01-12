@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('page_title') Settings @endsection
+@section('page_title') @lang('site.settings') @endsection
 
 @section('style')
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -86,7 +86,35 @@
                                 {{ $setting->site_name_en }}
                             </td>
                         </tr>
+                        <tr>
+                            <td width="10%" style="font-weight: bold">
+                                @lang('site.is_delivery')
+                            </td>
+                            <td width="90%">
+                              <input type="checkbox" {{$setting->is_delivery==1?'checked':''}} name="is_delivery"
+                                     class="@error('is_delivery') is-invalid @enderror" id="is_delivery" readonly disabled >
 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" style="font-weight: bold">
+                                @lang('site.is_free_shop')
+                            </td>
+                            <td width="90%">
+                              <input type="checkbox" {{$setting->is_free_shop==1?'checked':''}} name="is_free_shop"
+                                     class="@error('is_free_shop') is-invalid @enderror" id="is_free_shop" readonly disabled >
+
+                            </td>
+                        </tr>
+            
+                        <tr>
+                            <td width="10%" style="font-weight: bold">
+                                @lang('site.branches')
+                            </td>
+                            <td width="90%">
+                                {{ $setting->address }}
+                            </td>
+                        </tr>
                         <tr>
                             <td width="10%" style="font-weight: bold">
                                 @lang('site.facebook')
@@ -216,7 +244,24 @@
                                 {{ $setting->telegram }}
                             </td>
                         </tr>
+                        <tr>
+                            <td width="10%" style="font-weight: bold">
+                                @lang('site.not_have_product_ar')
 
+                            </td>
+                            <td width="90%">
+                                {{ $setting->not_have_product_ar }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="10%" style="font-weight: bold">
+                                @lang('site.not_have_product_en')
+
+                            </td>
+                            <td width="90%">
+                                {{ $setting->not_have_product_en }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

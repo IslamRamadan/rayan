@@ -16,7 +16,7 @@
                 </h2>
                 <br>
                 <p style="text-align: left">
-                    {{$page->page_details_en}}
+                    {!! $page->page_details_en !!}
                 </p>
 
 
@@ -29,7 +29,7 @@
 
                 <br>
                 <p style="text-align: right">
-                    {{$page->page_details_ar}}
+                    {!! $page->page_details_ar !!}
                 </p>
             @endif
         @else

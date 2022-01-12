@@ -29,9 +29,9 @@ class CurrencyController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $action = '
-                        <a class="btn btn-success"  href="'.route('currencies.edit' , $row->id).'" >Edit </a>
+                        <a class="btn btn-success"  href="'.route('currencies.edit' , $row->id).'" >'.\Lang::get('site.edit').' </a>
                         <meta name="csrf-token" content="{{ csrf_token() }}">
-                         <a  href="'.route('currencies.destroy' , $row->id).'" class="btn btn-danger">Delete</a>
+                         <a  href="'.route('currencies.destroy' , $row->id).'" class="btn btn-danger">'.\Lang::get('site.delete').'</a>
                                           ';
 
 //
@@ -68,8 +68,10 @@ class CurrencyController extends Controller
 
             'name.required'=>"اسم العمله مطلوب",
             'rate.required'=>"النسبه مطلوبه",
-            'code.required'=>"كود العمله مطلوب",
-            'code.unique' => "يرجي تغيير كود العمله لانه مستخدم بالفعل لعمله اخري"
+            'code_en.required'=>"العمله باللغه الانجليزية مطلوب",
+            'code_en.unique' => "يرجي تغيير العمله باللغه الانجليزية لانه مستخدم بالفعل لعمله اخري",
+            'code_ar.required'=>" كود العمله باللغه العربيه مطلوب",
+            'code_ar.unique' => "يرجي تغيير  كود العمله باللغه العربيه لانه مستخدم بالفعل لعمله اخري"
 
         ];
 
@@ -77,7 +79,8 @@ class CurrencyController extends Controller
 
             'name' => 'required',
             'rate' => 'required',
-            'code' => ['required' , 'unique:currencies,code'],
+            'code_ar' => ['required' , 'unique:currencies,code_ar'],
+            'code_en' => ['required' , 'unique:currencies,code_en'],
 
         ], $messeges);
 
@@ -92,7 +95,8 @@ class CurrencyController extends Controller
         $currency = Currency::create([
             'name' => $request['name'],
             'rate' => $request['rate'],
-            'code' => $request['code'],
+            'code_en' => $request['code_en'],
+            'code_ar' => $request['code_ar'],
         ]);
 
         if ($currency){
@@ -137,8 +141,10 @@ class CurrencyController extends Controller
 
             'name.required'=>"اسم العمله مطلوب",
             'rate.required'=>"النسبه مطلوبه",
-            'code.required'=>"كود العمله مطلوب",
-            'code.unique' => "يرجي تغيير كود العمله لانه مستخدم بالفعل لعمله اخري"
+            'code_en.required'=>"العمله باللغه الانجليزية مطلوب",
+            'code_en.unique' => "يرجي تغيير العمله باللغه الانجليزية لانه مستخدم بالفعل لعمله اخري",
+            'code_ar.required'=>" كود العمله باللغه العربيه مطلوب",
+            'code_ar.unique' => "يرجي تغيير  كود العمله باللغه العربيه لانه مستخدم بالفعل لعمله اخري"
 
         ];
 
@@ -146,7 +152,8 @@ class CurrencyController extends Controller
 
             'name' => 'required',
             'rate' => 'required',
-            'code' => ['required' ,'unique:currencies,code,' .$request['id']],
+            'code_en' => ['required' ,'unique:currencies,code_en,' .$request['id']],
+            'code_ar' => ['required' ,'unique:currencies,code_ar,' .$request['id']],
 
         ], $messeges);
 
@@ -162,7 +169,8 @@ class CurrencyController extends Controller
         $currency= $currency->update([
             'name' => $request['name'],
             'rate' => $request['rate'],
-            'code' => $request['code'],
+            'code_en' => $request['code_en'],
+            'code_ar' => $request['code_ar'],
 
         ]);
 

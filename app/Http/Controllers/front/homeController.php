@@ -13,6 +13,7 @@ use App\Pages;
 use App\ProdImg;
 use App\Product;
 use App\Slider;
+use App\SlidCategory;
 use App\User;
 use App\View;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Storage;
 
 //use Session;
 
@@ -54,10 +56,15 @@ class homeController extends Controller
             ->offset(0)->limit(8)->get();
         $offers = Product::orderBy('created_at', 'desc')->where('has_offer', 1)->where('appearance', 1)
             ->offset(0)->limit(8)->get();
+        $best_sell = Product::orderBy('created_at', 'desc')->where('best_selling', 1)->where('appearance', 1)
+            ->offset(0)->limit(5)->get();
         $posts = Post::orderBy('created_at', 'desc')->where('appearance', 1)
             ->offset(0)->limit(3)->get();
+
         // dd($new_arrive);
-        return view('front.index', compact('sliders', 'new_arrive', 'posts','offers'));
+        $index=true;
+        // dd('ff');
+        return view('front.index', compact('sliders', 'new_arrive', 'posts','offers','best_sell','index'));
     }
 
     public function account()
@@ -78,7 +85,9 @@ class homeController extends Controller
 
     public function contactUs()
     {
-        return view('front.contact_us');
+        $best_sell = Product::orderBy('created_at', 'desc')->where('best_selling', 1)->where('appearance', 1)
+        ->offset(0)->limit(5)->get();
+        return view('front.contact_us',compact('best_sell'));
     }
 
     public function contactUsStore(Request $request)
@@ -97,6 +106,7 @@ class homeController extends Controller
             'email' => ['required'],
             'phone' => ['required'],
             'body' => ['required'],
+              'file' =>'nullable|mimes:jpg,jpeg,png|max:4100',
 
         ], $messeges);
 
@@ -106,6 +116,43 @@ class homeController extends Controller
             return back();
         }
 
+        $file=null;
+        if ($request->hasfile('file')) {
+            // $images .= 'yes';
+
+                    $image = $request->file;
+                    $original_name = strtolower(trim($image->getClientOriginalName()));
+                    $file_name = time() . rand(100, 999) . $original_name;
+                    $path = 'uploads/contactus/images/';
+
+                    if (!Storage::exists($path)) {
+                        Storage::disk('public')->makeDirectory($path);
+                    }
+                    $img = \Image::make($image)->resize(512, 640);
+                    $img->save(public_path('storage/' . $path . $file_name), 60);
+
+            // $file = $request->file('file');
+            // $original_name = strtolower(trim($file->getClientOriginalName()));
+            // $file_name = time() . rand(100, 999) . $original_name;
+            // $path = 'uploads/contact_us/images/';
+            //
+            // if (!Storage::exists($path)) {
+            //     Storage::disk('public')->makeDirectory($path);
+            // }
+            // $img = \Image::make($file)->resize(512, 640);
+            // $img->save(public_path( $path . $file_name), 60);
+
+
+            // $s=Storage::disk('public')->putFile($path, $request->file('file'));
+            //d($s);
+            // Storage::disk('local')->put('file.txt', $path);
+             //$file->storeAs(public_path('storage/'.$path),$file_name);
+            //
+            // $img = \Image::make($file);
+            // $img->save(public_path('storage/'.$path.$file_name),30);
+        //
+        $file=$path.$file_name;
+      }
 
         $msg = ContactUs::create([
             'name' => $request['name'],
@@ -113,6 +160,7 @@ class homeController extends Controller
             'phone' => $request['phone'],
             'subject' => $request['subject'],
             'body' => $request['body'],
+            'file'=>$file
         ]);
 
         if ($msg) {
@@ -130,6 +178,13 @@ class homeController extends Controller
     {
         //        $prod_img=ProdImg::where('product_id',$id)->first()->img;
         //        dd($prod_img);
+        $sliders=SlidCategory::where('category_id',$id)->get();
+        if($sliders->count() <= 0){
+          $sliders = Slider::all();
+
+        }
+        // dd($id);
+
         if ($type == 1) {
             $last_views = Product::where('best_selling', 1)->where('basic_category_id', $id)->where('appearance', 1)->orderBy('updated_at',  'DESC')->take(3)->get();
 
@@ -144,7 +199,7 @@ class homeController extends Controller
             Alert::error('خطأ', 'هذا القسم غير متوفر حاليا');
             return back();
         }
-        return view('front.category', compact('category', 'type', 'last_views'));
+        return view('front.category', compact('category', 'type', 'last_views','sliders'));
     }
 
     public function new_arrive()
@@ -327,14 +382,15 @@ class homeController extends Controller
     public function store(Request $request)
     {
         //        dd($request->all());
-        // dd($request->id);
+        dd($request->search);
         //        TODO :: MAKE SEARCH CAT = 1 OR SUB = 2  & NAME & ID (FOR SUB OR CAT)
 
         $id = intVal($request->id);
         $cat_or_sub = intVal($request->cat_or_sub);
         $search = $request->search;
-
+        $items = null;
         if ($cat_or_sub) {
+            // dd('test');
             if ($cat_or_sub == 1) {
 
                 $items = Product::where(function ($q) use ($request) {
@@ -349,6 +405,8 @@ class homeController extends Controller
             }
 
             if ($cat_or_sub == 2) {
+            // dd('test2');
+
                 $items = Product::where(function ($q) use ($request) {
                     if ($request->search) {
                         $q->where('title_en', 'LIKE', '%' . $request->search . '%')->where('appearance', 1)->orWhere('title_ar', 'LIKE', '%' . $request->search . '%');
@@ -359,6 +417,8 @@ class homeController extends Controller
                 })->orderBy("id", "desc")->paginate();
             }
         } else {
+            dd('test3');
+
             $items = Product::where(function ($q) use ($request) {
                 if ($request->search) {
                     $q->where('title_ar', 'LIKE', '%' . $request->search . '%')->where('appearance', 1)->orWhere('title_en', 'LIKE', '%' . $request->search . '%');
@@ -368,6 +428,8 @@ class homeController extends Controller
                 }
             })->orderBy("id", "desc")->paginate();
         }
+        // dd($items);
+
 
         //        $value = '<div class="container border-main" style="width: 100%">
         //                    <div class="row row5" style="width: 100%">';
@@ -412,41 +474,51 @@ class homeController extends Controller
 
                             <br>
                             <h2 class="text-center  d-flex justify-content-between">
-                                 <b></b>
-                                <span >Result</span>
-                     <b></b>
+                                 <b></b>';
+        $value1 .=                    '<span >'.\Lang::get('site.result').'</span>';
+        $value1 .='<b></b>
                             </h2>
                              <br><br>
 
-                                     <div class="row">
+                                     <div class="row text-dir">
 
                                          <div class="col-12 pad-0">
 					 <ul class="tablinks  row MyServices mr-0 pad-0 text-center" style="list-style-type: none">';
         if ($items->count() > 0) {
             foreach ($items as $one) {
 
-                $value1 .= '<li class="in active  col-md-6 col-12 col-lg-4">'
+                $value1 .= '<li class="in active  col-md-4 col-6 col-lg-3">'
                     . '<div class=" product relative">'
-                    . '<a href="#"  class="heart2 heart addToWishList text-dark" data-product-id="' . $one->id . '">'
-                    . '<i class="far fa-heart "></i>'
-                    . '</a>'
+                    // . '<a href="#"  class="heart2 heart addToWishList text-dark" data-product-id="' . $one->id . '">'
+                    // . '<i class="far fa-heart "></i>'
+                    // . '</a>'
                     . '<a href="' . route('product', $one->id) . '" >'
                     . '<img src="' . asset('/storage/' . $one->img) . '"'
                     . 'onerror="this.onerror=null;this.src=' . asset('front/img/5.jpg') . '"'
-                    . 'class="show-img col-12" style="margin:auto;" >'
-                    . '<img src="' . asset('/storage/' . $one->height_img) . '"'
-                    . 'onerror="this.onerror=null;this.src=' . asset('front/img/5.jpg') . '"'
-                    . 'class="hide-img col-12" style="margin:auto;">'
-
-                    . '</a>'
-                    . '<p class="mr-0"><a href="' . route('product', $one->id) . '">' . $one->title_en . '</a> </p>'
+                    . 'width="100%" class="image" style="margin:auto;" >'
 
 
-                    . '<h6><a href="' . route('product', $one->id) . '">' . $one->basic_category->name_en
+                    . '</a>';
+                    if(app()->getLocale() == 'en') {
+
+                    $value1 .=  '<p class="mr-0 text-dir"><a href="' . route('product', $one->id) . '">' . $one->title_en . '</a> </p>'
+
+
+                    . '<h6 class="mr-0 text-dir"><a href="' . route('product', $one->id) . '">' . $one->basic_category->name_en
                     . '-' .
                     $one->category->name_en . '</a></h6>'
-                    . '<h5>' . $one->price . 'KWD'
-                    . '</h5> </div>  </li>';
+                    . '<h5 class="mr-0 text-dir">' . \Lang::get('site.kwd').$one->price  ;
+                    }
+                    else{
+                        $value1 .=  '<p class="mr-0 text-dir"><a href="' . route('product', $one->id) . '">' . $one->title_ar . '</a> </p>'
+
+
+                        . '<h6 class="mr-0 text-dir"><a href="' . route('product', $one->id) . '">' . $one->basic_category->name_ar
+                        . '-' .
+                        $one->category->name_en . '</a></h6>'
+                        . '<h5 class="mr-0 text-dir">' . \Lang::get('site.kwd').$one->price  ;
+                    }
+                    $value1 .= '</h5> </div>  </li>';
             }
         } else {
             $value1 .= '<p style="text-align: center ;width: 100%;margin: 30px" >
@@ -464,4 +536,17 @@ class homeController extends Controller
 
         return response()->json($value1);
     }
+
+    public function checkCat(Request $request){
+        // dd($request->all());
+        $cat_id = $request->cat_id;
+        $cat_type=BasicCategory::find($cat_id)->type;
+        // dd($cat_type);
+        return response()->json([
+            'cat_type' => $cat_type
+        ]);
+
+
+    }
+
 }

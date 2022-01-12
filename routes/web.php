@@ -54,7 +54,7 @@ Route::group(
 
     });
     Route::get('/payment','front\homeController@payment')->name('payment');
-    Route::get('/policy','front\homeController@policy')->name('policy');
+    Route::get('/terms','front\homeController@policy')->name('policy');
     Route::get('/product/{id}','front\homeController@product')->name('product');
 //    Route::get('/index','front\homeController@home')->name('index');
 
@@ -96,6 +96,7 @@ Route::group(
     Route::get('/getHeights','front\CartController@getHeights')->name('get.heights');
     Route::post('/getCities','front\CartController@getCities')->name('get.cities');
     Route::post('/getDelivery','front\CartController@getDelivery')->name('get.delivery');
+    Route::post('/checkCategory','front\homeController@checkCat')->name('check.cat');
 
     Route::post('/order/store','front\CartController@store')->name('order.store');
     Route::get('payment_callback' , 'front\CartController@callBackUrl');
@@ -120,6 +121,10 @@ Route::group(
         Route::resource('basic_categories','Backend\BasicCategoryController');
         Route::resource('size_guides','Backend\SizeGuideController');
         Route::resource('categories','Backend\CategoryController');
+        Route::get('/category_galaries/{id}', 'Backend\CategoryGalaryController@index')->name("category_galaries.index");
+        Route::post('/category_galaries/store/{id}', 'Backend\CategoryGalaryController@store')->name("category_galaries.store");
+        Route::delete('/category_galaries/destroy/{id}', 'Backend\CategoryGalaryController@destroy')->name("category_galaries.destroy");
+
         Route::resource('currencies','Backend\CurrencyController');
         Route::resource('countries','Backend\CountryController');
         Route::resource('cities','Backend\CityController');
@@ -128,6 +133,7 @@ Route::group(
         Route::resource('heights','Backend\HeightController');
         Route::resource('products','Backend\ProductController');
         Route::resource('contact_us','Backend\ContactUsController');
+        Route::post('/orders/filter','Backend\OrderController@index')->name('filter');
         Route::resource('orders','Backend\OrderController');
         Route::get('/order/notpaid','Backend\OrderController@not_paid')->name('noorders');
         Route::resource('posts','Backend\PostController');

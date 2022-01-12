@@ -47,13 +47,13 @@
                     <table class="table align-items-center justify-content-center mb-0 data-table  text-secondary text-xs ">
                         <thead>
                         <tr>
-                <th width="5%">No</th>
                 <th width="5%">Id</th>
                 <th width="10%">@lang('site.name')</th>
                 <th width="10%">@lang('site.phone')</th>
                 <th width="10%">@lang('site.email')</th>
                 <th width="10%">@lang('site.subject')</th>
                 <th width="30%">@lang('site.body')</th>
+                <th width="30%">@lang('site.img')</th>
 
             </tr>
             </thead>
@@ -77,13 +77,16 @@
             serverSide: true,
             ajax: "{{ route('contact_us.index') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
                 {data: 'phone', name: 'phone'},
                 {data: 'email', name: 'email'},
                 {data: 'subject', name: 'subject'},
                 {data: 'body', name: 'body'},
+                {data: 'image', name: 'image',render: function( data, type, full, meta ) {
+                    return "<img src=\"" + data + "\"   border=\"0\"  class=\"img-rounded\" align=\"center\"  height=\"70\"/>";
+                }},
+
             ]
         });
 
@@ -151,5 +154,3 @@
 
 </script>
 @endsection
-
-

@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('page_title')  Currencies  @endsection
+@section('page_title')  @lang('site.currency')  @endsection
 @section('style')
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     {{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />--}}
@@ -49,7 +49,8 @@
             <th width="5%">Id</th>
             <th width="20%">@lang('site.name')</th>
             <th width="20%">@lang('site.rate')</th>
-            <th width="20%">@lang('site.code')</th>
+            <th width="20%">@lang('site.code_en')</th>
+            <th width="20%">@lang('site.code_ar')</th>
             <th width="20%">@lang('site.action')</th>
         </tr>
         </thead>
@@ -75,7 +76,8 @@
                 {data: 'id', name: 'id'},
                 {data: 'name', name: 'name'},
                 {data: 'rate', name: 'rate'},
-                {data: 'code', name: 'code'},
+                {data: 'code_en', name: 'code_en'},
+                {data: 'code_ar', name: 'code_ar'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
@@ -144,5 +146,3 @@
 
 </script>
 @endsection
-
-

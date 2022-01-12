@@ -26,8 +26,9 @@ class AdminController extends Controller
                 ->addColumn('action', function($row){
 
                     $action = '
-<a class="btn btn-success"  href="'.route('admins.edit' , $row->id).'" id="edit-user" >Edit </a>
-<meta name="csrf-token" content="{{ csrf_token() }}">';
+                      <a class="btn btn-success"  href="'.route('admins.edit' , $row->id).'" id="edit-user" >'.\Lang::get('site.edit').' </a>
+                      <meta name="csrf-token" content="{{ csrf_token() }}">';
+                      $action.=' <a href="' . url('admins/destroy', $row->id) . '" class="btn btn-danger test-form">'.\Lang::get('site.delete').'</a>';
 
 //<a href="'.url('/admins/destroy', $row->id).'" class="btn btn-danger">Delete</a>
 

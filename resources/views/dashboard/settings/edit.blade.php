@@ -29,7 +29,35 @@
                 <input value="{{ $setting->site_name_en}}"  type="text" name="site_name_en"
                        class="form-control @error('site_name_en') is-invalid @enderror" id="site_name_en">
             </div>
+            <div class="form-group">
+                <label for="phone">
 
+                    @lang('site.is_delivery')
+
+
+                </label>
+                <input type="checkbox" {{$setting->is_delivery==1?'checked':''}} name="is_delivery"
+                       class="@error('is_delivery') is-invalid @enderror" id="is_delivery">
+            </div>
+            <div class="form-group">
+                <label for="phone">
+
+                    @lang('site.is_free_shop')
+
+
+                </label>
+                <input type="checkbox" {{$setting->is_free_shop==1?'checked':''}} name="is_free_shop"
+                       class="@error('is_free_shop') is-invalid @enderror" id="is_free_shop">
+            </div>
+            <div class="form-group">
+                <label for="address">
+
+                    @lang('site.branches')
+
+                </label>
+                <input value="{{ $setting->address}}"  type="text" name="address"
+                       class="form-control @error('address') is-invalid @enderror" id="address">
+            </div>
             <div class="form-group">
                 <label for="logo">
                     @lang('site.logo')
@@ -75,6 +103,7 @@
                     {{ $setting->site_des_en}}
                 </textarea>
             </div>
+
 
 
 
@@ -186,8 +215,20 @@
                 <input value="{{ $setting->telegram}}"  type="text" name="telegram"
                        class="form-control @error('telegram') is-invalid @enderror" id="telegram">
             </div>
-
-
+            <div class="form-group">
+                <label for="not_have_product_ar">
+                    @lang('site.not_have_product_ar')
+                </label>
+                <input value="{{ $setting->not_have_product_ar}}"  type="text" name="not_have_product_ar"
+                       class="form-control @error('not_have_product_ar') is-invalid @enderror" id="not_have_product_ar">
+            </div>
+            <div class="form-group">
+                <label for="not_have_product_en">
+                    @lang('site.not_have_product_en')
+                </label>
+                <input value="{{ $setting->not_have_product_en}}"  type="text" name="not_have_product_en"
+                       class="form-control @error('not_have_product_en') is-invalid @enderror" id="not_have_product_en">
+            </div>
         </div>
 
             <button type="submit" class="btn btn-primary">

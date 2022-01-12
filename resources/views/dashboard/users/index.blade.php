@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('page_title')  Users  @endsection
+@section('page_title')  @lang('site.users')  @endsection
 
 @section('style')
     <script src="https://code.jquery.com/jquery-3.6.0.js"
@@ -47,10 +47,8 @@
                 <table class="table align-items-center justify-content-center mb-0 data-table  text-secondary text-xs ">
                     <thead>
                     <tr>
-                    <th width="5%">No</th>
                     <th width="5%">Id</th>
                     <th width="10%">@lang('site.name')</th>
-                    <th width="10%">@lang('site.email')</th>
                     <th width="10%">@lang('site.password')</th>
                     <th width="10%">@lang('site.country')</th>
                     <th width="10%">@lang('site.phone')</th>
@@ -158,16 +156,12 @@
                 serverSide: true,
                 ajax: "{{ route('users.index') }}",
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
-                    {data: 'email', name: 'email'},
                     {data: 'password_view', name: 'password_view'},
                     {data: 'country', name: 'country'},
                     {data: 'phone', name: 'phone'},
                     {data: 'created_at', name: 'created_at'},
-
-
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
@@ -236,5 +230,3 @@
 
     </script>
 @endsection
-
-

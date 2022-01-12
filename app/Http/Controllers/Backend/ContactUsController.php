@@ -25,6 +25,11 @@ class ContactUsController extends Controller
             $data = ContactUs::latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
+                ->addColumn('image', function ($row) {
+
+
+                    return asset("storage/".$row->file);
+                })
 //                ->rawColumns(['action'])
                 ->make(true);
         }

@@ -34,7 +34,7 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-right">
                     {{-- <a class="btn btn-success mb-2" id="new-user" data-toggle="modal">New User</a> --}}
-                    <a class="btn btn-success mb-2" href="{{ route('basic_categories.create') }}">New Basic Category</a>
+                    <a class="btn btn-success mb-2" href="{{ route('basic_categories.create') }}">@lang('site.add_basic_category')</a>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
             </div>
         </div>
     </div>
-    <div id="hh" class="test-form">hhhh</div>
+    {{--  <div id="hh" class="test-form">hhhh</div>  --}}
 
     <!-- Add and Edit customer modal -->
     {{-- <div class="modal fade" id="crud-modal" aria-hidden="true" > --}}

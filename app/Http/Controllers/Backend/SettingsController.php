@@ -68,7 +68,7 @@ class SettingsController extends Controller
      */
     public function edit($id)
     {
-        $setting = Settings::all()->first();
+        $setting = Settings::first();
 
         if(!$setting){
             $setting = Settings::create();
@@ -87,9 +87,24 @@ class SettingsController extends Controller
     public function updateSetting(Request $request , $id)
     {
         if(Settings::all()->count() > 0){
-            $setting = Settings::all()->first();
-            $setting->update($request->except('logo','footer_logo','ad_image'));
+             $setting = Settings::first();
+            $setting->update($request->except('logo','is_free_shop','is_delivery','footer_logo','ad_image'));
+            if($request->has('is_free_shop')){
+              $setting->is_free_shop=1;
+              $setting->save();
 
+            }else{
+              $setting->is_free_shop=0;
+              $setting->save();
+            }
+            if($request->has('is_delivery')){
+              $setting->is_delivery=1;
+              $setting->save();
+
+            }else{
+              $setting->is_delivery=0;
+              $setting->save();
+            }
             if ($request->hasfile('logo')) {
                 // $images .= 'yes';
 

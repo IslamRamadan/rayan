@@ -6,103 +6,6 @@
 @section('content')
     <!-----start  --->
 
-    <br><br>
-
-
-{{-- <div class="container-fluid"> --}}
-    {{-- <div class="container"> --}}
-            {{-- <div class="row justify-content-center">
-                <div class=" col-12 col-lg-3 col-md-5 best-sell pl-0"  >
-                    <div class="row">
-                        <div class="col-6 p-0" >
-                            <a href="">
-                                <img src="{{asset('front/img/11.jpeg')}}" style="width: 100%;height:100%">
-                            </a>
-                        </div>
-                        <div class="col-6 p-2">
-                            <h5 class="font-weight-bold">Woman jacket</h5>
-                            <p>Woman jacket Woman jacket</p>
-                            <h5 class="font-weight-bold main-color">50KD</h5>
-                            <a class="btn btn-dark text-light font-weight-bold" style="background: #f13582">Add to cart</a>
-                        </div>
-
-                    </div>
-                </div> --}}
-
-
-            {{-- </div> --}}
-    {{-- </div> --}}
-{{-- </div> --}}
-<div class="container-fluid">
-    <div class="owl-carousel islam owl-theme" id="one">
-        <div class="item best-sell">
-            <div class="row dir-rtl" style="height:45vh">
-                <div class="col-6 p-0 res-wid" >
-                    <a href="">
-                        <img src="{{asset('front/img/11.jpeg')}}" style="width: 100%;height:100%">
-                    </a>
-                </div>
-                <div class="col-6 p-2 text-dir ">
-                    <h5 class="font-weight-bold">Woman jacket</h5>
-                    <p>Woman jacket Woman jacket</p>
-                    <h5 class="font-weight-bold main-color">50KD</h5>
-                    <a class="btn btn-dark text-light font-weight-bold" style="background: #f13582">Add to cart</a>
-                </div>
-
-            </div>
-        </div>
-        <div class="item best-sell">
-            <div class="row dir-rtl" style="height:45vh">
-                <div class="col-6 p-0 res-wid" >
-                    <a href="">
-                        <img src="{{asset('front/img/11.jpeg')}}" style="width: 100%;height:100%">
-                    </a>
-                </div>
-                <div class="col-6 p-2 text-dir ">
-                    <h5 class="font-weight-bold">Woman jacket Woman jacket Woman jacket</h5>
-                    <p>Woman jacket Woman jacket</p>
-                    <h5 class="font-weight-bold main-color">50KD</h5>
-                    <a class="btn btn-dark text-light font-weight-bold" style="background: #f13582">Add to cart</a>
-                </div>
-
-            </div>
-        </div>
-        <div class="item best-sell">
-            <div class="row dir-rtl" style="height:45vh">
-                <div class="col-6 p-0 res-wid" >
-                    <a href="">
-                        <img src="{{asset('front/img/11.jpeg')}}" style="width: 100%;height:100%">
-                    </a>
-                </div>
-                <div class="col-6 p-2 text-dir ">
-                    <h5 class="font-weight-bold">Woman jacket</h5>
-                    <p>Woman jacket Woman jacket</p>
-                    <h5 class="font-weight-bold main-color">50KD</h5>
-                    <a class="btn btn-dark text-light font-weight-bold" style="background: #f13582">Add to cart</a>
-                </div>
-
-            </div>
-        </div>
-        <div class="item best-sell">
-            <div class="row dir-rtl" style="height:45vh">
-                <div class="col-6 p-0 res-wid" >
-                    <a href="">
-                        <img src="{{asset('front/img/11.jpeg')}}" style="width: 100%;height:100%">
-                    </a>
-                </div>
-                <div class="col-6 p-2 text-dir ">
-                    <h5 class="font-weight-bold">Woman jacket</h5>
-                    <p>Woman jacket Woman jacket</p>
-                    <h5 class="font-weight-bold main-color">50KD</h5>
-                    <a class="btn btn-dark text-light font-weight-bold" style="background: #f13582">Add to cart</a>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-</div>
-
     <div class="col-md-6 col-10 col-sm-12 col-xs-12 text-dir" style="margin: auto;">
         <h3 class="account-table-head">@lang('site.contact_us')</h3>
         <br>
@@ -148,7 +51,7 @@
                     <label for="subject"  class="type-text w-100"
                         {{--                       class="col-md-4 col-form-label text-md-right"--}}
                     >
-                        @lang('site.subject')
+                        @lang('site.title')
                     </label>
 
 
@@ -161,7 +64,7 @@
                     <label for="body"  class="type-text w-100"
                         {{--                       class="col-md-4 col-form-label text-md-right"--}}
                     >
-
+                    @lang('site.subject')
                     </label>
 
 
@@ -172,7 +75,15 @@
 
                 </div>
 
+                <div class="form-group">
+                    <label for="photo">
 
+                        @lang('site.file_c_us')
+
+                    </label>
+                    <input type="file" name="file"
+                           class="form-control">
+                </div>
                 <button type="submit" class="btn btn-dark">
                     save
                 </button>

@@ -147,7 +147,7 @@
 </head>
 <body>
 
-<div class="container-fluid pad-0 bg-dark d-md-block d-none ">
+<div class="container-fluid pad-0 d-md-block d-none ">
     <div class="container  ">
 
 

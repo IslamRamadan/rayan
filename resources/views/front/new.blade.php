@@ -93,7 +93,7 @@
                             @if ($p->appearance == 1)
 
                                 <div class="col-6 col-md-4 col-lg-3">
-                                    <div class=" product relative text-dir mb-3">
+                                    <div class=" product relative text-dir mb-5">
 
                                         {{-- <div class="  heart ">
                                         <a href="#" class="addToWishList text-white" data-product-id="{{$p->id}}">
@@ -106,17 +106,17 @@
                                             <div style="position: relative">
                                                 <img src="{{ asset('/storage/' . $p->img) }}"
                                                     onerror="this.onerror=null;this.src='{{ asset('front/img/3.jpg') }}'"
-                                                    width="100%" class="show-img image">
+                                                    width="300" height="300"class="show-img image">
                                                 <div class="middle">
                                                     <div class="btn btn-danger">@lang('site.add_to_cart')</div>
                                                 </div>
                                                 @if ($img = App\ProdImg::where('product_id', $p->id)->first())
-                                                    <img src="{{ asset($img->img) }}" width="100%" class="hide-img image">
+                                                    <img src="{{ asset($img->img) }}"  width="300" height="300"  class="hide-img image">
                                                     <div class="middle">
                                                         <div class="btn btn-danger">@lang('site.add_to_cart')</div>
                                                     </div>
                                                 @else
-                                                    <img src="{{ asset('/storage/' . $p->img) }}" width="100%"
+                                                    <img src="{{ asset('/storage/' . $p->img) }}"   width="300" height="300"
                                                         class="hide-img image">
                                                     <div class="middle">
                                                         <div class="btn btn-danger">@lang('site.add_to_cart')</div>
@@ -170,7 +170,8 @@
                                             @guest()
                                                 @if (Cookie::get('name'))
                                                     {{ number_format($p->price / App\Country::find(Cookie::get('name'))->currency->rate, 2) }}
-                                                    {{ App\Country::find(Cookie::get('name'))->currency->code }}
+                                                    {{-- {{ App\Country::find(Cookie::get('name'))->currency->code }} --}}
+                                                    @lang('site.kwd')
                                                 @else
                                                     {{ $p->price }}
                                                     @lang('site.kwd')
@@ -213,7 +214,7 @@
                 Swal.fire({
                 icon: '?',
                 title:'Login first!',
-                confirmButtonColor: '#d76797',
+                confirmButtonColor: '#7aa93c',
                 position:'bottom-start',
                 showCloseButton: true,
                 })

@@ -2,6 +2,40 @@
     <div class="container">
         <div class="row res-mobile text-dir">
 
+            <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0 pr-4 pl-3 text-dir">
+                <div class="footer-head">
+
+                <h5 class="font-weight-bold">@lang('site.customer_services')
+                </h5>
+                </div>
+                <p class="brdr-btm"> <a href="{{ route('policy') }}"> @lang('site.privacy_policy') </a>
+                <p class="brdr-btm"> <a href="{{ route('contact.us') }}"> @lang('site.contact_us') </a>
+                <p class="brdr-btm"> <a href="{{ route('wishlist.view') }}"> @lang('site.mywishlist') </a>
+                <p class="brdr-btm"> <a href="{{ route('checkout') }}"> @lang('site.payment') </a>
+
+
+            </div>
+            <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0 pr-4 pl-3 text-dir">
+                <div class="footer-head">
+                <h5 class="font-weight-bold">@lang('site.branches')
+                </h5>
+                </div>
+                <p class="brdr-btm"><span class="font-weight-bold"> &nbsp;</span> <br> <a href=""> {{$my_setting->address}} </a>
+
+
+
+            </div>
+            <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0 pr-4 pl-2 text-center">
+                <div class="footer-head">
+                    <h5 class="font-weight-bold">@lang('site.direct_contact')
+                    </h5>
+
+                </div>
+                @if ($my_setting->whatsapp)
+                    <a href="https://wa.me/{{ $my_setting->whatsapp }}" target="_blank"
+                            title="whatsapp"><i class="fab fa-whatsapp fa-3x" style="color:#0cff3c"></i></a>
+                @endif
+            </div>
             <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0">
                 <div class="text-center">
                 <img src="{{ asset('/storage/' . $my_setting->footer_logo) }}" style="mix-blend-mode: multiply;
@@ -9,115 +43,36 @@
                     </div>
                 {{-- <p class="font-italic text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p> --}}
                 <ul class="list-inline mt-4 text-center" style="direction: ltr">
-                    @if (\App\Settings::all()->first()->whatsapp)
-                        <li class="list-inline-item"><a href="https://wa.me/{{ $my_setting->whatsapp }}" target="_blank"
-                                title="whatsapp"><i class="fab fa-whatsapp fa-2x"></i></a></li>
-                    @endif
-                    @if (\App\Settings::all()->first()->facebook)
-                        <li class="list-inline-item"><a href="{{ $my_setting->facebook }}" target="_blank"
-                                title="facebook"><i class="fab fa-facebook fa-2x"></i></a></li>
-                    @endif
-                    @if (\App\Settings::all()->first()->email)
-                        <li class="list-inline-item"><a href="mailto:{{ $my_setting->email }}" target="_blank"
-                                title="Gmail"><i class="far fa-envelope fa-2x"></i></a></li>
-                    @endif
-                    @if (\App\Settings::all()->first()->twitter)
-                        <li class="list-inline-item"><a href="{{ $my_setting->twitter }}" target="_blank"
-                                title="twitter"><i class="fab fa-twitter fa-2x"></i></a></li>
-                    @endif
-                    @if (\App\Settings::all()->first()->youtube)
-                        <li class="list-inline-item"><a href="{{ $my_setting->youtube }}" target="_blank"
-                                title="youtube"><i class="fab fa-youtube fa-2x"></i></a></li>
-                    @endif
-                    @if (\App\Settings::all()->first()->instagram)
+
+                    @if ($my_setting->instagram)
                         <li class="list-inline-item"><a href="{{ $my_setting->instagram }}" target="_blank"
-                                title="instagram"><i class="fab fa-instagram fa-2x"></i></a></li>
+                                title="instagram"><i class="fab fa-instagram fa-3x" style="color:#fc79b5"></i></a></li>
                     @endif
-                    @if (\App\Settings::all()->first()->telegram)
-                        <li class="list-inline-item"><a href="#" target="_blank" title="telegram"><i
-                                    class="fab fa-telegram fa-2x"></i></a></li>
+                    @if ($my_setting->twitter)
+                        <li class="list-inline-item"><a href="{{ $my_setting->twitter }}" target="_blank"
+                                title="snapchat"><i class="fab fa-snapchat-ghost fa-3x" style="color:#d5d334
+                                "></i></a></li>
                     @endif
 
                 </ul>
-            </div>
-            {{-- <div class="col-md-4">
-                <h5>@lang('site.contact_us')</h5>
-
-                @if (\App\Settings::all()->first()->whatsapp)
-
-                    <p>@lang('site.whatsapp'): <a href="
-                    https://wa.me/{{ \App\Settings::all()->first()->phone }}
-">
-
-                            {{ \App\Settings::all()->first()->phone }}
-                        </a>
-                    </p>
-
-
-
-                @endif
-
-                @if (\App\Settings::all()->first()->whatsapp)
-                <i class="fab fa-facebook"></i>
-                    <p>@lang('site.instagram'): <a href="
-                    {{ \App\Settings::all()->first()->instagram }}
-                            ">
-
-                            {{ \App\Settings::all()->first()->instagram }}
-                        </a>
-                    </p>
-
-
-
-                @endif
-
-                <p>@lang('site.address'): <a href=""> kuwait </a>
-
-            </div> --}}
-
-            <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0">
-                <h5 class="font-weight-bold">@lang('site.contact_us')
-                </h5>
-                <p> <a href="{{ route('policy') }}"> @lang('site.privacy_policy') </a>
-                <p> <a href="{{ route('wishlist.view') }}"> @lang('site.mywishlist') </a>
-                <p> <a href="{{ route('checkout') }}"> @lang('site.payment') </a>
-                <p> <a href="{{ route('contact.us') }}"> @lang('site.contact_us') </a>
-
-
-            </div>
-            <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0">
-                <h5 class="font-weight-bold">@lang('site.contact_us')
-                </h5>
-                <p><span class="font-weight-bold">@lang('site.phone') &nbsp;</span> <a href=""> {{$my_setting->phone}} </a>
-                <p><span class="font-weight-bold">@lang('site.address1') &nbsp;</span> <a href=""> @lang('site.address_one') </a>
-                <p><span class="font-weight-bold">@lang('site.address2') &nbsp;</span> <a href=""> @lang('site.address_two') </a>
-
-
-
-            </div>
-            <div class="col-lg-3 col-md-6 mb-6 col-sm-6 mb-lg-0">
-                <h5 class="font-weight-bold">@lang('site.location')
-                </h5>
-                <iframe
-                    src="https://www.google.com/maps/place/89+%D9%85%D9%88%D9%84%E2%80%AD/@29.1733361,48.0974687,17z/data=!3m1!4b1!4m5!3m4!1s0x3fcf0a1955885157:0x8098b6351a2b6f42!8m2!3d29.1733361!4d48.09528?hl=ar-US"
-                    width="100%" height="200" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false"
-                    tabindex="0"></iframe>
             </div>
 
         </div>
     </div>
 
-</footer>
-<div class="container-fluid pad-0 bg-dark  text-center">
+
+<div class="container-fluid pad-0 text-center">
     <div class="container  ">
         <br>
-        <p class="c-w mr-0">Copyright 2021 © RAYAN STORE
-            Design by <a href="">bluezone</a>
+        <p class="mr-0" style="
+    color: #7aa93c;
+">Copyright 2021 © REDSUGER
+            Design by <a target="_blank" href="https://bluezonekw.com/">bluezone</a>
         </p>
         <br>
     </div>
 </div>
-
+</footer>
 
 
 <script src="{{ asset('front/js/jquery-3.3.1.min.js') }}"></script>
@@ -190,12 +145,12 @@
             },
             // when window width is >= 480px
             770: {
-                slidesPerView: 2,
+                slidesPerView: 3,
                 spaceBetween: 30
             },
             // when window width is >= 640px
             1000: {
-                slidesPerView: 3,
+                slidesPerView: 4,
                 spaceBetween: 30
             }
         },
@@ -251,17 +206,42 @@
 <script src="{{asset('front/assets/js/meanmenu.min.js')}}"></script>
 <script src="{{asset('front/assets/js/main.js')}}"></script>
 <script>
-    $('.owl-carousel').owlCarousel({
+    $('.owl-one').owlCarousel({
     loop:true,
     margin:10,
     responsiveClass:true,
+    // autoplay:true,
     lazyLoad:true,
     autoWidth:true,
 
     responsive:{
         0:{
             items:1,
-            nav:true
+            nav:false
+        },
+        600:{
+            items:2,
+            nav:false
+        },
+        1080:{
+            items:6,
+            nav:true,
+            loop:true
+        }
+    }
+});
+    $('.owl-two').owlCarousel({
+    loop:true,
+    margin:10,
+    responsiveClass:true,
+    // autoplay:true,
+    lazyLoad:true,
+    // autoWidth:true,
+
+    responsive:{
+        0:{
+            items:1,
+            nav:false
         },
         600:{
             items:2,
@@ -275,6 +255,50 @@
     }
 });
 
+// $('.owl-slider').owlCarousel({
+//     loop: false,
+//         margin: 10,
+
+//         responsive: {
+//             0: {
+//                 items: 1,
+//                 nav: true
+//             },
+//             600: {
+//                 items: 1,
+//                 nav: false
+//             },
+//             1000: {
+//                 items: 3,
+//                 nav: true,
+//                 loop: false
+//             }
+//         }
+// });
+$('.owl-three').owlCarousel({
+    loop:true,
+    margin:10,
+    responsiveClass:true,
+    // autoplay:true,
+    lazyLoad:true,
+    autoWidth:true,
+
+    responsive:{
+        0:{
+            items:1,
+            nav:true
+        },
+        600:{
+            items:2,
+            nav:false
+        },
+        1080:{
+            items:1,
+            nav:true,
+            loop:true
+        }
+    }
+});
 </script>
 {{-- slider ismail end --}}
 

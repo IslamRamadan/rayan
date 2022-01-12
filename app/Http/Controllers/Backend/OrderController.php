@@ -6,10 +6,12 @@ use App\Country;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\OrderItem;
+use App\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
@@ -18,7 +20,26 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+          $filter = Session::get('filter');
+          if($filter != null ){
+            $data = Order::where('status','!=',0);
+
+            if($filter['from']!= null){
+              $data->whereDate('created_at','>=',$filter['from']);
+            }
+
+            if($filter['to']!= null){
+              $data->whereDate('created_at','<=',$filter['to']);
+
+            }
+            if($filter['city_id']!= null){
+              $data->where('city_id','<=',$filter['city_id']);
+            }
+            $data=$data->latest()->get();
+          }else{
             $data = Order::where('status','!=',0)->latest()->get();
+
+          }
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('status', function ($artist) {
@@ -32,25 +53,40 @@ class OrderController extends Controller
                     if($artist->status == 2){
                         return 'تم الأستلام';
                     }
+                })->addColumn('image', function ($row) {
+
+                   $images_elm = [];
+                   $items_or = OrderItem::where('order_id' , $row->id)->get();
+
+                     foreach ($items_or as  $item_or) {
+                       // $img=
+                       array_push($images_elm,asset('storage/'.$item_or->product->img)) ;
+                     }
+
+                     // dd($images_elm);
+
+
+                     return $images_elm;
+
                 })
                 ->addColumn('action', function($row){
 //                    <a class="btn btn-success"  href="'.route('countries.edit' , $row->id).'" id="edit-user" >Edit </a>
                     $action = '
                         <a class="btn btn-primary"
                          style="margin:5px"
-                         href="'.route('order.items.view' , $row->id).'" id="edit-user" >Order Items </a>
+                         href="'.route('order.items.view' , $row->id).'" id="edit-user" >'.\Lang::get('site.order_details').' </a>
 
                      ';
 
                     if($row->status == 1){
                     $action .='         <a class="btn btn-success"
                       style="margin:5px"
-                    href="'.route('orders.received' , $row->id).'" id="edit-user" >Switch to Recevied </a>';
+                    href="'.route('orders.received' , $row->id).'" id="edit-user" >'.\Lang::get('site.switch_received').' </a>';
                     }
                     if($row->status == 2){
                     $action .='         <a class="btn btn-dark"
                       style="margin:5px"
-                     id="edit-user" >Recevied Done </a>';
+                     id="edit-user" >'.\Lang::get('site.received_done').' </a>';
                     }
 
                     $action .='
@@ -62,9 +98,21 @@ class OrderController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
-        }
+        }elseif($request->has('filter')){
+          $filter=[
+            'from'=>$request->from,
+            'to'=>$request->to,
+            'city_id'=>$request->city_id
+          ];
+          Session::put('filter', $filter);
+          $cities = City::get();
+          // dd(  $filter);
+          return view('dashboard.orders.index',compact('cities'));
 
-        return view('dashboard.orders.index');
+        }
+        $cities = City::get();
+        Session::forget('filter');
+        return view('dashboard.orders.index',compact('cities'));
     }
     public function not_paid(Request $request)
     {
@@ -87,11 +135,11 @@ class OrderController extends Controller
                     }
                 })
                 ->addColumn('action', function($row){
-//                    <a class="btn btn-success"  href="'.route('countries.edit' , $row->id).'" id="edit-user" >Edit </a>
+                      //                    <a class="btn btn-success"  href="'.route('countries.edit' , $row->id).'" id="edit-user" >Edit </a>
                     $action = '
                         <a class="btn btn-primary"
                          style="margin:5px"
-                         href="'.route('order.items.view' , $row->id).'" id="edit-user" >Order Items </a>
+                         href="'.route('order.items.view' , $row->id).'" id="edit-user" >'.\Lang::get('site.order_details').'  </a>
 
                      ';
 
@@ -103,7 +151,7 @@ class OrderController extends Controller
 
                     $action .='
                         <meta name="csrf-token" content="{{ csrf_token() }}">';
-//                        <a href="'.url('countries/destroy' , $row->id).'" class="btn btn-danger">Delete</a>
+                          //                        <a href="'.url('countries/destroy' , $row->id).'" class="btn btn-danger">Delete</a>
 
                     return $action;
 
@@ -157,6 +205,7 @@ class OrderController extends Controller
             $data = OrderItem::where('order_id' , $order_id)->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
+
                 ->addColumn('product', function ($artist) {
                     return $artist->product->title_en?:'' . ' - ' . $artist->product->title_ar?:'' ;
                 })
@@ -175,10 +224,22 @@ class OrderController extends Controller
                     return $artist->product->price?:"";
                 })
                 ->addColumn('height', function ($artist) {
-                    return $artist->height->height->name?:"";
+                    if ($artist->product->basic_category->type == 1) {
+                        return "-";
+                    }
+                    else{
+                        return $artist->height->height->name?:"";
+
+                    }
                 })
                 ->addColumn('size', function ($artist) {
-                    return $artist->size->size->name?:"";
+                    if ($artist->product->basic_category->type == 1) {
+                        return "-";
+                    }
+                    else{
+
+                        return $artist->size->size->name?:"";
+                    }
                 })
 //                ->rawColumns(['action'])
                 ->make(true);

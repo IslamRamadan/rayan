@@ -35,7 +35,7 @@
                 <label for="delivery">
                     @lang('site.delivery_cost')
                 </label>
-                <input value="{{ $city->delivery}}"   type="number" name="delivery"
+                <input value="{{ $city->delivery}}"   type="number" step="0.01" name="delivery"
                        class="form-control @error('delivery') is-invalid @enderror" id="delivery">
             </div>
             <div class="form-group">

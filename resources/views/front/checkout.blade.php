@@ -3,14 +3,94 @@
     @lang('site.home')
 
 @endsection
+
+
+@section('css')
+<style>
+
+  input#my-check {
+      margin: 0 5px;
+  }
+  a.a-link-i {
+    margin: 0 5px;
+    color: #048fd1;
+}
+
+#incDec {
+  margin: 0 15px 15px ;
+  width: 360px;
+  /* display: grid; */
+  font-size: 1rem;
+}
+
+#incDec::before {
+  content: "{{__('site.out-delivery')}}";
+  padding: 0.5rem;
+  border: 1px solid #6ca433;
+  background-color: #6ca433;
+  color: white;
+}
+
+#incDec::after {
+  content: "{{__('site.in-delivery')}}";
+  padding: 0.5rem;
+  border: 1px solid #6ca433;
+  background-color: white;
+  color: #6ca433;
+}
+
+#incDec:checked::before {
+  border: 1px solid #6ca433;
+  background-color: white;
+  color: #6ca433;
+}
+
+#incDec:checked::after {
+  border: 1px solid #6ca433;
+  background-color: #6ca433;
+  color: white;
+}
+@media (min-width: 0px) and (max-width: 600px){
+  #incDec {
+    margin: 0 15px 15px ;
+    width: 250px;
+    /* display: grid; */
+    font-size: .5rem;
+  }
+
+}
+</style>
+
+
+@if($my_setting->is_delivery != 1)
+<style>
+#incDec::after ,.is_delivery {
+    display: none;
+    }
+    #incDec {
+    margin: 0 15px 15px;
+    width: 325px;
+    }
+    </style>
+@endif
+    @endsection
+
 @section('content')
     <!-----start  --->
     {{-- @if (Session::has('coupon'))
     {{ dd(session()->get('coupon')) }}
     @endif --}}
     @if (Session::has('cart'))
-
-        <div class="container-fluid "><br><br>
+        
+        <div class="container-fluid "><br>
+        
+            @if($my_setting->is_delivery != 1)
+            
+                <div class="alert alert-warning text-center" role="alert">
+                  @lang('site.is_not_deli')
+                </div>
+                        
+            @endif
             <div class="row pad  dir-rtl">
                 <div class="col-12 col-lg-8 ">
                     <div class=" border text-dir ">
@@ -18,6 +98,7 @@
                             <h3 class=" col-12">@lang('site.shipping_details')</h3>
                         </div>
                         <br>
+                        
                         <div class="row mr-0">
                             <form class="form-vertical col-md-12 col-xs-12 " id="orders-form"
                                 action="{{ route('order.store') }}" method="post">
@@ -25,6 +106,20 @@
                                 @csrf
                                 <!--<div class="alert alert-success" style="margin-top: -45px;text-align:center"></div>
                                        -->
+                                    @if($my_setting->is_delivery == 1)
+                                     <div class="form-group incDec">
+                                         <input type="checkbox" id="incDec" name="in-delivery" checked >
+
+                                     </div>
+
+                                    @else
+                                    
+                                        <div class="form-group incDec not_de">
+                                             <input type="checkbox" id="incDec" name="in-delivery" disabled >
+    
+                                        </div>
+                                    
+                                    @endif
                                 <h6>@lang('site.mandatory')</h6>
 
                                 @guest()
@@ -55,7 +150,7 @@
                                         <input id="phone_code" class="form-control" required="required" name="phone"
                                             value="{{ old('phone') }}" type="number" maxlength="11">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group is_delivery">
                                         <label for="Orders_country_id" class="required font-weight-bold"
                                             style="color:red">@lang('site.country') <span
                                                 class="required">*</span></label>
@@ -84,12 +179,19 @@
 
                                     </div>
 
-                                    <div class="form-group">
+                                    <div class="form-group is_delivery">
                                         <label for="Orders_city_id" class="required font-weight-bold" style="color:red">
-                                            @lang('site.region') <span class="required">*</span></label>
+                                            @lang('site.city') <span class="required">*</span></label>
                                         <select style="height: 45px; " class="form-control" name="city_id"
                                             id="Orders_city_id">
                                         </select>
+                                    </div>
+                                      <div class="form-group">
+                                        <label for="region" class="required font-weight-bold" style="color:red">
+                                            @lang('site.region')
+                                            <span class="required">*</span></label>
+                                        <input class="form-control" placeholder="region" name="region" id="region"
+                                            value="{{ old('region') }}" type="text">
                                     </div>
 
 
@@ -104,18 +206,26 @@
                                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                                     <input type="hidden" name="name" value="{{ Auth::user()->name }}">
                                     <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+                                    
                                     <input type="hidden" id="Orders_country_id" name="country_id"
                                         value="{{ Auth::user()->country_id }}">
                                     <input type="hidden" name="phone" value="{{ Auth::user()->phone }}">
 
-                                    <div class="form-group">
+                                    <div class="form-group is_delivery">
                                         <label for="Orders_city_id" class="required font-weight-bold" style="color:red">
-                                            @lang('site.region') <span class="required">*</span></label>
+                                            @lang('site.city') <span class="required">*</span></label>
                                         <select style="height: 45px;   " class="form-control" name="city_id"
                                             id="Orders_city_id">
                                         </select>
                                     </div>
                                     <div id="test">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="region" class="required font-weight-bold" style="color:red">
+                                            @lang('site.region')
+                                            <span class="required">*</span></label>
+                                        <input class="form-control" placeholder="region" name="region" id="region"
+                                            value="{{ old('region') }}" type="text">
                                     </div>
 
 
@@ -139,7 +249,7 @@
                                 {{-- type="text" maxlength="100"></div> --}}
 
 
-                                <div class="form-group">
+                                <div class="form-group is_delivery">
                                     <label for="Orders_address_line1" class="required font-weight-bold"
                                         style="color:red"><span class="required">*</span>@lang('site.add_1')</label>
                                     <input class="form-control" placeholder="" name="address1" id="Orders_address_line1"
@@ -175,7 +285,12 @@
 
                                 <input type="hidden" name="total_price">
                                 <input type="hidden" name="total_quantity">
+                                <div class="check-field">
+                                   <input id="my-check" name="accept"type="checkbox" ><label for="my-check" style="display: inline-flex;">@lang('site.I_accept_the_terms') <a class="a-link-i " href="{{ route('policy') }}">
+                                                       @lang('site.policy')
 
+                                                   </a></label>
+                                 </div>
                                 <br>
                                 {{-- <input value="2021-01-20 03:16:46" name="Orders[created_at]" id="Orders_created_at" --}}
                                 {{-- type="hidden"> --}}
@@ -232,7 +347,8 @@
                                                     @guest()
                                                         @if (Cookie::get('name'))
                                                             {{ number_format(\App\Product::find($cart_child['product_id'])['price'] / App\Country::find(Cookie::get('name'))->currency->rate, 2) }}
-                                                            {{ App\Country::find(Cookie::get('name'))->currency->code }}
+                                                            {{-- {{ App\Country::find(Cookie::get('name'))->currency->code }} --}}
+                                                            @lang('site.kwd')
                                                         @else
                                                             {{ \App\Product::find($cart_child['product_id'])['price'] }}
                                                             @lang('site.kwd')
@@ -243,10 +359,17 @@
                                                     @lang('site.quantity')
                                                     : {{ $cart_child['quantity'] }}
                                                     <br>
+                                                    <?php $id = (\App\Product::find($cart_child['product_id'])['basic_category_id']);
+                                                    $category=\App\BasicCategory::find($id)->type;
+                                             ?>
+                                             {{-- {{dd($category)}} --}}
+                                                @if ($category !=1)
+
                                                     @lang('site.size'):
                                                     {{ \App\ProdSize::find($cart_child['product_size_id'])->size['name'] }}
                                                     <br>
                                                     @lang('site.code'): {{ $cart_child['product_id'] }} <br>
+                                                @endif
                                                 </p>
                                             </div>
                                         </div>
@@ -281,7 +404,8 @@
                                                     @guest()
                                                         @if (Cookie::get('name'))
                                                             {{ number_format(Session::get('cart_details')['totalPrice'] / App\Country::find(Cookie::get('name'))->currency->rate, 2) }}
-                                                            {{ App\Country::find(Cookie::get('name'))->currency->code }}
+                                                            {{-- {{ App\Country::find(Cookie::get('name'))->currency->code }} --}}
+                                                            @lang('site.kwd')
                                                         @else
                                                             {{ Session::get('cart_details')['totalPrice'] }}
                                                             @lang('site.kwd')
@@ -318,7 +442,8 @@
                                                         @guest()
                                                             @if (Cookie::get('name'))
                                                                 {{ number_format(Session::get('coupon')['discount'] / App\Country::find(Cookie::get('name'))->currency->rate, 2) }}
-                                                                {{ App\Country::find(Cookie::get('name'))->currency->code }}
+                                                                {{-- {{ App\Country::find(Cookie::get('name'))->currency->code }} --}}
+                                                                @lang('site.kwd')
                                                             @else
                                                                 {{ Session::get('coupon')['discount'] }} @lang('site.kwd')
                                                             @endif
@@ -353,8 +478,8 @@
                                                     @lang('site.total_price'):
                                                 </span>
                                                 <input type="hidden"
-                                                    value="{{ Session::get('cart_details')['totalPrice'] - Session::get('coupon')['discount'] }}"
-                                                    id="total_value">
+                                                    value="{{ number_format(Session::get('cart_details')['totalPrice'] - Session::get('coupon')['discount'], 2) }}"
+                                                    cur="@lang('site.kwd')"  id="total_value">
                                                 <span id="total">
                                                     {{-- {{Session::get('cart_details')['totalPrice']}} @lang('site.kwd') --}}
                                                 </span>
@@ -366,6 +491,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @auth()
                             @if (!Session::has('coupon'))
 
                             <div class="text-dir m-2">
@@ -392,12 +518,13 @@
 
                             </div>
                 @endif
-
+                @endauth
                         </div>
 
 
 
                 @endif
+
 
             </div><br><br>
         </div>
@@ -419,10 +546,49 @@
 
 
 @section('script')
+   @if($my_setting->is_delivery != 1)
+     <script>
+        $(document).ready(function() {
 
+            
+            
+            
+              $('.is_delivery').hide();
+
+              $('#delivery').html('-')
+              $('#test1').html('0')
+              var total_value =$('#total_value').val();
+              var cur =$('#total_value').attr('cur');
+              $('#total').html(total_value+cur)
+            
+            
+
+        })
+    </script>
+    @else
     <script>
         $(document).ready(function() {
 
+            
+            $('#incDec').on('change',
+            function() {
+              if ($('input#incDec').is(':checked')) {
+              // console.log('checked');
+              $('.is_delivery').show();
+
+              getCities();
+              getDelivery();
+            }else{
+              $('.is_delivery').hide();
+
+              $('#delivery').html('-')
+              $('#test1').html('0')
+              var total_value =$('#total_value').val();
+              var cur =$('#total_value').attr('cur');
+              $('#total').html(total_value+cur)
+            }
+            }
+            )
 
 
             getCities();
@@ -456,7 +622,7 @@
                         if (!result.success) {
                             Swal.fire({
                                 icon: '?',
-                                confirmButtonColor: '#d76797',
+                                confirmButtonColor: '#7aa93c',
                                 position: 'bottom-start',
                                 showCloseButton: true,
                                 title: result.msg,
@@ -475,7 +641,7 @@
                         Swal.fire({
                             title: 'لم تكتمل العمليه ',
                             icon: '?',
-                            confirmButtonColor: '#d76797',
+                            confirmButtonColor: '#7aa93c',
                             position: 'bottom-start',
                             showCloseButton: true,
                         })
@@ -485,7 +651,7 @@
             }
 
 
-            getDelivery();
+            // getDelivery();
 
             $('#Orders_city_id').on('change',
                 function() {
@@ -518,7 +684,7 @@
                         if (!result.success) {
                             Swal.fire({
                                 icon: '?',
-                                confirmButtonColor: '#d76797',
+                                confirmButtonColor: '#7aa93c',
                                 position: 'bottom-start',
                                 showCloseButton: true,
                                 title: result.msg,
@@ -538,7 +704,7 @@
                         Swal.fire({
                             title: 'لم تكتمل العمليه ',
                             icon: '?',
-                            confirmButtonColor: '#d76797',
+                            confirmButtonColor: '#7aa93c',
                             position: 'bottom-start',
                             showCloseButton: true,
                         })
@@ -548,6 +714,7 @@
             }
         })
     </script>
-
+ 
+    @endif
 
 @endsection

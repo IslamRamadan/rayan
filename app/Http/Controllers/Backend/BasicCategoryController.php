@@ -35,10 +35,10 @@ class BasicCategoryController extends Controller
                 ->addColumn('action', function ($row) {
 
                     $action = '
-<a class="btn btn-success "  href="' . route('basic_categories.edit', $row->id) . '" id="edit-user" >Edit </a>
+<a class="btn btn-success "  href="' . route('basic_categories.edit', $row->id) . '" id="edit-user" >'.\Lang::get('site.edit').' </a>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 ';
-$action.=' <a href="' . url('basic_categories/destroy', $row->id) . '" class="btn btn-danger test-form">Delete</a>';
+$action.=' <a href="' . url('basic_categories/destroy', $row->id) . '" class="btn btn-danger test-form">'.\Lang::get('site.delete').'</a>';
 
 
                     return $action;
@@ -58,6 +58,7 @@ $action.=' <a href="' . url('basic_categories/destroy', $row->id) . '" class="bt
 
     public function store(Request $request)
     {
+        // dd($request->all());
 
 
         $messeges = [
@@ -118,6 +119,7 @@ $action.=' <a href="' . url('basic_categories/destroy', $row->id) . '" class="bt
             $cat = BasicCategory::create([
                 'name_ar' => $request['name_ar'],
                 'name_en' => $request['name_en'],
+                'type' =>1,
                 'image_url' => $path.$file_name
             ]);
 
@@ -201,6 +203,7 @@ $action.=' <a href="' . url('basic_categories/destroy', $row->id) . '" class="bt
             $cat = $cat->update([
                 'name_ar' => $request['name_ar'],
                 'name_en' => $request['name_en'],
+                'type' =>1,
                 'image_url' => $path.$file_name
             ]);
 
@@ -209,6 +212,8 @@ $action.=' <a href="' . url('basic_categories/destroy', $row->id) . '" class="bt
             $cat = $cat->update([
                 'name_ar' => $request['name_ar'],
                 'name_en' => $request['name_en'],
+                'type' =>1,
+
 //                'image_url' => $image->storeAs($path, $file_name, 'public')
             ]);
         }

@@ -4,38 +4,39 @@
 
 @endsection
 @section('content')
+
     <!-----start carousel --->
     <div id="carouselExampleIndicators" class="carousel slide relative" data-ride="carousel">
         <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          @foreach ($sliders as $k=>$one)
+            <li data-target="#carouselExampleIndicators" data-slide-to="{{$k}}" {{$k == 0 ?'class="active"':''}}></li>
+          @endforeach
         </ol>
+
         <div class="carousel-inner">
-            <div class="carousel-item active ">
-                <img class=" w-100 h " src="{{ asset('front/img/11.jpeg') }}" alt="1 slide">
-                <div class="abs w-100">
-                    <p class="c-w mr-0">it has finally started</p>
-                    <h1 class=""> Sara Almutairi</h1>
-                    <button class=" btn btn-danger">shop now <i class="far fa-heart"></i> </button>
+
+            @foreach ($sliders as $i=>$one)
+                <div class="carousel-item  @if ($i == 0) active @endif ">
+                    <img class=" w-100 h " src="{{ asset('storage/' . $one->img) }}" alt="1 slide"
+                        style="height: 70vh">
+                  {{--  @if (app()->getLocale() == 'en')
+                        <div class="abs w-100">
+                            <p class="c-w mr-0">{{ $one->description_en }}</p>
+                            <h1 class=""> {{ $one->name_en }}</h1>
+                            <button class=" btn btn-danger">@lang('site.shop_now') <i class="far fa-heart"></i></button>
+                    </div> @else
+                        <div class="abs w-100">
+                            <p class="c-w mr-0">{{ $one->description_ar }}</p>
+                            <h1 class=""> {{ $one->name_ar }}</h1>
+                            <button class=" btn btn-danger">@lang('site.shop_now') <i class="far fa-heart"></i></button>
+                        </div>
+                    @endif
+                    --}}
+
                 </div>
-            </div>
-            <div class="carousel-item  ">
-                <img class=" w-100 h " src="{{ asset('front/img/5.jpeg') }}" alt="1 slide">
-                <div class="abs w-100">
-                    <p class="c-w mr-0">it has finally started</p>
-                    <h1 class=""> Sara Almutairi</h1>
-                    <button class=" btn btn-danger">shop now <i class="far fa-heart"></i> </button>
-                </div>
-            </div>
-            <div class="carousel-item  ">
-                <img class=" w-100 h " src="{{ asset('front/img/8.jpeg') }}" alt="1 slide">
-                <div class="abs w-100">
-                    <p class="c-w mr-0">it has finally started</p>
-                    <h1 class=""> Sara Almutairi</h1>
-                    <button class=" btn btn-danger">shop now <i class="far fa-heart"></i> </button>
-                </div>
-            </div>
+
+            @endforeach
+
 
         </div>
         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -47,6 +48,8 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
+    <!--- end head --->
+    <br>
     <!-----start  --->
     <div class="container ">
         <div class="row dir-rtl text-dir">
@@ -303,7 +306,8 @@
                                         @guest()
                                             @if (Cookie::get('name'))
                                                 {{ number_format($b->price / App\Country::find(Cookie::get('name'))->currency->rate, 2) }}
-                                                {{ App\Country::find(Cookie::get('name'))->currency->code }}
+                                                {{-- {{ App\Country::find(Cookie::get('name'))->currency->code }} --}}
+                                                @lang('site.kwd')
                                             @else
                                                 {{ $b->price }} @lang('site.kwd')
 
@@ -327,18 +331,11 @@
                             @if ($p)
                                 @if ($p->appearance == 1)
 
-                                    <div class="col-6 col-md-6 col-lg-4">
-                                        <div class=" product relative text-dir mb-3">
-
-                                            {{-- <div class="  heart ">
-                                        <a href="#" class="addToWishList text-white" data-product-id="{{$p->id}}">
-                                            <i class="far fa-heart "></i>
-                                        </a>
-
-                                    </div> --}}
+                                    <div class="col-6 col-md-4 col-lg-3">
+                                        <div class=" product relative text-dir mb-5">
 
                                             <a href="{{ route('product', $p->id) }}" class="image-hover ">
-                                                <div style="position: relative">
+                                                <div style="position: relative;padding-bottom: 2px;  border-bottom: 1px solid #d3db23;  border-bottom-width: 1px;border-bottom-style: solid;border-bottom-color: rgb(211, 219, 35);">
                                                     <img src="{{ asset('/storage/' . $p->img) }}"
                                                         onerror="this.onerror=null;this.src='{{ asset('front/img/3.jpg') }}'"
                                                         width="100%" class="show-img image">
@@ -406,7 +403,8 @@
                                                 @guest()
                                                     @if (Cookie::get('name'))
                                                         {{ number_format($p->price / App\Country::find(Cookie::get('name'))->currency->rate, 2) }}
-                                                        {{ App\Country::find(Cookie::get('name'))->currency->code }}
+                                                        {{-- {{ App\Country::find(Cookie::get('name'))->currency->code }} --}}
+                                                        @lang('site.kwd')
                                                     @else
                                                         {{ $p->price }}
                                                         @lang('site.kwd')
@@ -425,29 +423,13 @@
 
                     @else
                         <h5 style="text-align: center;margin: auto">
-                            @lang('site.no_data')
+                            {{app()->getLocale() == 'ar' ? $my_setting->not_have_product_ar : $my_setting->not_have_product_en}}
                         </h5>
                     @endif
 
                 </div>
                 <br><br>
 
-                {{-- <nav aria-label="Page navigation example  "> --}}
-                {{-- <ul class="pagination justify-content-center"> --}}
-                {{-- <li class="page-item"> --}}
-                {{-- <a class="page-link"><i class="fas fa-angle-right  main-color" style="font-size: 20px;"></i> --}}
-                {{-- </a> --}}
-                {{-- </li> --}}
-                {{-- <li class="page-item"><a class="page-link">1</a></li> --}}
-                {{-- <li class="page-item"><a class="page-link">2</a></li> --}}
-                {{-- <li class="page-item"><a class="page-link">3</a></li> --}}
-
-
-                {{-- <li class="page-item "> --}}
-                {{-- <a class="page-link"> <i class="fas fa-angle-left main-color" style="font-size: 20px;"></i></a> --}}
-                {{-- </li> --}}
-                {{-- </ul> --}}
-                {{-- </nav> --}}
             </div>
         </div>
     </div>
@@ -465,7 +447,7 @@
                 Swal.fire({
                 icon: '?',
                 title:'Login first!',
-                confirmButtonColor: '#d76797',
+                confirmButtonColor: '#7aa93c',
                 position:'bottom-start',
                 showCloseButton: true,
                 })

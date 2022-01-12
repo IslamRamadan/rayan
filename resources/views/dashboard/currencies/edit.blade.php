@@ -30,13 +30,22 @@
             </div>
 
             <div class="form-group">
-                <label for="code">
+                <label for="code_en">
 
-                    @lang('site.code')
+                    @lang('site.code_en')
 
                 </label>
-                <input value="{{ $currency->code }}"  type="text" name="code"
-                       class="form-control @error('code') is-invalid @enderror" id="code">
+                <input value="{{ $currency->code_en }}"  type="text" name="code_en"
+                       class="form-control @error('code_en') is-invalid @enderror" id="code_en">
+            </div>
+            <div class="form-group">
+                <label for="code_ar">
+
+                    @lang('site.code_ar')
+
+                </label>
+                <input value="{{ $currency->code_ar }}"  type="text" name="code_ar"
+                       class="form-control @error('code_ar') is-invalid @enderror" id="code_ar">
             </div>
             <input type="hidden" value="{{$currency->id}}" name="id">
 
